@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpSession;
 import java.security.GeneralSecurityException;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/user")
@@ -68,7 +69,7 @@ public class UserController {
      * @return
      */
     @PostMapping("/login")
-    public R<String> login(@RequestBody User user, HttpSession session) throws GeneralSecurityException {
+    public R<String> login(@RequestBody Map map, HttpSession session) throws GeneralSecurityException {
 
 
         return R.error("邮件发送失败");
