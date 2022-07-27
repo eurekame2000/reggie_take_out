@@ -21,3 +21,5 @@ mybatis-plus:
 
 reggie:
   path: D:\\img\\
+  email-from: 1804616952@qq.com
+  email-to: 1810713410@qq.com
