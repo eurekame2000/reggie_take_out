@@ -17,7 +17,9 @@ import javax.mail.internet.MimeMessage;
 import com.sun.mail.util.MailSSLSocketFactory;
 import org.springframework.stereotype.Component;
 
-
+/**
+ * 发邮件的工具类
+ */
 public class MailUtils {
 
 
