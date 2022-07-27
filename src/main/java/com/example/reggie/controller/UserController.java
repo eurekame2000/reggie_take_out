@@ -1,5 +1,6 @@
 package com.example.reggie.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.example.reggie.common.R;
 import com.example.reggie.entity.User;
 import com.example.reggie.service.UserService;
@@ -65,13 +66,41 @@ public class UserController {
 
     /**
      * 移动端用户登录
-     * @param user
+     * @param map
+     * @param session
      * @return
+     * @throws GeneralSecurityException
      */
     @PostMapping("/login")
-    public R<String> login(@RequestBody Map map, HttpSession session) throws GeneralSecurityException {
+    public R<User> login(@RequestBody Map map, HttpSession session) throws GeneralSecurityException {
 
+        log.info(map.toString());
 
-        return R.error("邮件发送失败");
+        //获取邮箱
+        String email = map.get("phone").toString();
+        //获取验证码
+        String code = map.get("code").toString();
+        //从Session中获取保存的验证码
+        Object codeInSession = session.getAttribute(email);
+
+        //进行验证码的比对（页面提交的验证码和Session中保存的验证码比对）
+        if(codeInSession!=null&&codeInSession.equals(code)){
+            //如果比对成功，说明登录成功
+            LambdaQueryWrapper<User> queryWrapper=new LambdaQueryWrapper<>();
+            queryWrapper.eq(User::getPhone,email);
+
+            User user = userService.getOne(queryWrapper);
+
+            if(user==null){
+                //判断当前邮箱对应的用户是否是新用户，如果是新用户就自动完成注册
+                user=new User();
+                user.setPhone(email);
+                user.setStatus(1);
+                userService.save(user);
+            }
+            session.setAttribute("user",user.getId());
+            return R.success(user);
+        }
+        return R.error("登录失败");
     }
 }
